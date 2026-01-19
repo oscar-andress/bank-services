@@ -10,6 +10,32 @@ El sistema está compuesto por dos microservicios independientes que se comunica
 
 ---
 
+## ❇️ Flujo de eventos
+
+┌──────────────┐
+│ Client API   │
+│ POST /client │
+└──────┬───────┘
+       ▼
+┌────────────────────┐
+│ Client Service     │
+│*1. Save client*    |
+│*2. Producer event* | 
+└──────┬─────────────┘
+       │  *Client created event*
+       ▼
+┌──────────────────┐
+│ Kafka Topic      │
+└──────┬───────────┘
+       ▼
+┌────────────────────┐
+│ Account Service    │
+│*1. Consumer event* |
+│*2. Save account*   | 
+└────────────────────┘
+
+---
+
 ## ⚙️ Configuración
 
 ### Variables de entorno
