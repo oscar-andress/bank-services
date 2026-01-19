@@ -1,0 +1,431 @@
+{
+  "info": {
+    "_postman_id": "c3d09236-be17-4d40-91b8-ad99180f834d",
+    "name": "Bank",
+    "description": "Bank APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51101186"
+  },
+  "item": [
+    {
+      "name": "account-movement",
+      "item": [
+        {
+          "name": "movement",
+          "item": [
+            {
+              "name": "movement",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://127.0.0.1:8084/bank/api/v1/movement/1/0/5",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "8084",
+                  "path": [
+                    "bank",
+                    "api",
+                    "v1",
+                    "movement",
+                    "1",
+                    "0",
+                    "5"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "movement",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"accountId\": 1,\n    \"movementType\": \"DEPOSIT\",\n    \"value\": 100.00\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://127.0.0.1:8084/bank/api/v1/movement",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "8084",
+                  "path": [
+                    "bank",
+                    "api",
+                    "v1",
+                    "movement"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "movement",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"movementId\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://127.0.0.1:8084/bank/api/v1/movement",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "8084",
+                  "path": [
+                    "bank",
+                    "api",
+                    "v1",
+                    "movement"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "movement",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "http://127.0.0.1:8084/bank/api/v1/movement",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "8084",
+                  "path": [
+                    "bank",
+                    "api",
+                    "v1",
+                    "movement"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Movement APIs"
+        },
+        {
+          "name": "account",
+          "item": [
+            {
+              "name": "account",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"cliendId\": \"CLI-000001\",\n    \"accountType\": \"CHECKING\",\n    \"initialBalance\":0.0\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://127.0.0.1:8084/bank/api/v1/account",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "8084",
+                  "path": [
+                    "bank",
+                    "api",
+                    "v1",
+                    "account"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "account/{clientId}",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://127.0.0.1:8084/bank/api/v1/account/CLI-000001",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "8084",
+                  "path": [
+                    "bank",
+                    "api",
+                    "v1",
+                    "account",
+                    "CLI-000001"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "account",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"accountId\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://127.0.0.1:8084/bank/api/v1/account",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "8084",
+                  "path": [
+                    "bank",
+                    "api",
+                    "v1",
+                    "account"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "account",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"accountId\":2,\n    \"status\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://127.0.0.1:8084/bank/api/v1/account",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "8084",
+                  "path": [
+                    "bank",
+                    "api",
+                    "v1",
+                    "account"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Account APIs"
+        }
+      ],
+      "description": "Account-Movement Services"
+    },
+    {
+      "name": "client-person",
+      "item": [
+        {
+          "name": "client",
+          "item": [
+            {
+              "name": "client",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"personId\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://127.0.0.1:8083/bank/api/v1/client",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "8083",
+                  "path": [
+                    "bank",
+                    "api",
+                    "v1",
+                    "client"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "client",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"personId\": 1,\n    \"address\": \"Mu muy lejos\",\n    \"cellPhone\": \"1234567890\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://127.0.0.1:8083/bank/api/v1/client",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "8083",
+                  "path": [
+                    "bank",
+                    "api",
+                    "v1",
+                    "client"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "client",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://127.0.0.1:8083/bank/api/v1/client/0/5",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "8083",
+                  "path": [
+                    "bank",
+                    "api",
+                    "v1",
+                    "client",
+                    "0",
+                    "5"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "client",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Oscar Andres Vega Arellano\",\n  \"gender\": \"MALE\",\n  \"birthDate\": \"1996-03-17\",\n  \"identification\": \"0987654321\",\n  \"address\": \"Muy lejos\",\n  \"cellPhone\": \"0991234567\",\n  \"password\": \"SecureP@ss123\",\n  \"accountType\": \"SAVING\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://127.0.0.1:8083/bank/api/v1/client",
+                  "protocol": "http",
+                  "host": [
+                    "127",
+                    "0",
+                    "0",
+                    "1"
+                  ],
+                  "port": "8083",
+                  "path": [
+                    "bank",
+                    "api",
+                    "v1",
+                    "client"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "description": "Client APIs"
+        }
+      ],
+      "description": "Client-Person Services"
+    }
+  ]
+}
