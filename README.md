@@ -1,7 +1,7 @@
 # 🏦 Bank Services – Microservicios
 ![Docker](https://img.shields.io/badge/docker-ready-blue)
 
-Sistema bancario basado en **arquitectura de microservicios**, desarrollado con **Spring Boot**, **Apache Kafka**, **PostgreSQL** y **Docker**, enfocado en buenas prácticas de diseño, mensajería asincrónica y pruebas.
+Sistema bancario basado en **arquitectura de microservicios**, desarrollado con **Spring Boot**, **Apache Kafka**, **PostgreSQL** y **Docker**, enfocado en buenas prácticas de diseño, mensajería asincrónica y pruebas. 
 
 ---
 ## 🧱 Arquitectura
@@ -21,6 +21,8 @@ spring.datasource.url=${SPRING_DATASOURCE_URL}
 spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
 spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
 ```
+
+---
 ## 📂 Estructura del proyecto
 
 ```text
@@ -41,6 +43,7 @@ bank-services/
 ├── docker-compose.yml
 └── README.md
 
+```
 ---
 
 ## 🛠️ Stack
@@ -56,7 +59,6 @@ bank-services/
 
 ---
 
-```
 ## 🧪 Testing
 
 Includes **unit and integration tests** for:
