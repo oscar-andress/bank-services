@@ -97,7 +97,8 @@ class ClienteControllerTest {
         )
         .andDo(print())
         .andExpect(status().isConflict())
-        .andExpect(status().reason(containsString("Client "+ request.getIdentification()+" already registered")));
+        .andExpect(jsonPath("$.message")
+            .value(containsString("Client " + request.getIdentification() + " already registered")));
         
         // Verify
         verify(clientService).registerClient(any(CreateClientRequest.class));

@@ -25,6 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -34,15 +35,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import bank.client_person.data.TestData;
-import bank.client_person.dto.message.event.ClientEvent;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
 @Testcontainers
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 
 class ClientControllerTest {
 
@@ -67,6 +68,9 @@ class ClientControllerTest {
     @Value("${spring.kafka.create-client-topic.name}")
     private String createClientTopic;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     private String clientEvent;
     private String request;
     private Properties consumerProps;
@@ -74,12 +78,13 @@ class ClientControllerTest {
     @BeforeEach
     void setUp() throws JsonProcessingException{
         // GIVEN
+        
         // Data to String JSON
         request = objectMapper.writeValueAsString(TestData.generateRequestData());
         clientEvent = objectMapper.writeValueAsString(TestData.generateClientEventData());
+        
         // PROPS CONSUMER 
         consumerProps = TestData.generateProperties(kafka.getBootstrapServers());
-
     }
 
     @Test
