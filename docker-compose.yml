@@ -1,0 +1,125 @@
+version: "3.8"
+
+services:
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: kafka
+    hostname: kafka
+    ports:
+      - "9092:9092"
+
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+
+      KAFKA_HEAP_OPTS: "-Xms512M -Xmx512M"
+
+      TZ: America/Guayaquil
+      KAFKA_OPTS: "-Duser.timezone=America/Guayaquil"
+
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
+    command: >
+      bash -c "
+      kafka-storage format -t MkU3OEVBNTcwNTJENDM2Qk -c /etc/kafka/kraft/server.properties --ignore-formatted &&
+      /etc/confluent/docker/run
+      "
+
+    networks:
+      - bank-network
+
+  postgres-client-person:
+    image: postgres:16
+    container_name: postgres-client-person
+    hostname: postgres-client-person
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: client_person_db
+      POSTGRES_USER: client_person_user
+      POSTGRES_PASSWORD: client_person_pass
+      TZ: America/Guayaquil
+      PGTZ: America/Guayaquil
+    volumes:
+      - client-person-db-data:/var/lib/postgresql/data
+      - ./client-person/db/init:/docker-entrypoint-initdb.d
+    networks:
+      - bank-network
+
+  postgres-account-movement:
+    image: postgres:16
+    container_name: postgres-account-movement
+    hostname: postgres-account-movement
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: account_movement_db
+      POSTGRES_USER: account_movement_user
+      POSTGRES_PASSWORD: account_movement_pass
+      TZ: America/Guayaquil
+      PGTZ: America/Guayaquil
+    volumes:
+      - account-movement-db-data:/var/lib/postgresql/data
+      - ./account-movement/db/init:/docker-entrypoint-initdb.d
+    networks:
+      - bank-network
+
+  client-person-service:
+    build:
+      context: ./client-person
+      dockerfile: Dockerfile
+    image: client-person:latest
+    container_name: client-person-service
+    depends_on:
+      - kafka
+      - postgres-client-person
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: ${CLIENT_PERSON_URL}
+      SPRING_DATASOURCE_USERNAME: ${CLIENT_PERSON_USER}
+      SPRING_DATASOURCE_PASSWORD: ${CLIENT_PERSON_PASS}
+    networks:
+      - bank-network
+
+  account-movement-service:
+    build:
+      context: ./account-movement
+      dockerfile: Dockerfile
+    image: account-movement:latest
+    container_name: account-movement-service
+    depends_on:
+      - kafka
+      - postgres-account-movement
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: ${ACCOUNT_MOVEMENT_URL}
+      SPRING_DATASOURCE_USERNAME: ${ACCOUNT_MOVEMENT_USER}
+      SPRING_DATASOURCE_PASSWORD: ${ACCOUNT_MOVEMENT_PASS}
+    networks:
+      - bank-network
+
+volumes:
+  kafka-data:
+  client-person-db-data:
+  account-movement-db-data:
+
+networks:
+  bank-network:
+    driver: bridge
