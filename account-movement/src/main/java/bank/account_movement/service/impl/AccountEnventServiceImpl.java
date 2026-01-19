@@ -47,7 +47,6 @@ public class AccountEnventServiceImpl implements AccountEventService{
         account.setAccountType(AccountType.valueOf(accountType));
         account.setClientId(clientId);
         account.setInitialBalance(BigDecimal.ZERO);
-        account.setStatus(false);
         return account;
         
     }
