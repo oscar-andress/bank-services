@@ -11,7 +11,7 @@ El sistema está compuesto por dos microservicios independientes que se comunica
 ---
 
 ## ❇️ Flujo de eventos
-
+```text
 ┌──────────────┐
 │ Client API   │
 │ POST /client │
@@ -33,7 +33,7 @@ El sistema está compuesto por dos microservicios independientes que se comunica
 │*1. Consumer event* |
 │*2. Save account*   | 
 └────────────────────┘
-
+```
 ---
 
 ## ⚙️ Configuración
