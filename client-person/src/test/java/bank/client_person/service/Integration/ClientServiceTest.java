@@ -17,13 +17,13 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.server.ResponseStatusException;
 
 import bank.client_person.data.TestData;
-import bank.client_person.dto.message.event.ClientEvent;
 import bank.client_person.dto.request.CreateClientRequest;
 import bank.client_person.dto.response.CreateClientResponse;
 import bank.client_person.entity.Client;
 import bank.client_person.kafka.producer.ClientEventProducer;
 import bank.client_person.repository.ClientRepository;
 import bank.client_person.service.ClientService;
+import bank.common_lib.event.dto.client.ClientCreateEvent;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
@@ -39,7 +39,7 @@ class ClientServiceTest {
     
     private Client client;
     private CreateClientRequest request;
-    private ArgumentCaptor<ClientEvent> eventCaptor; 
+    private ArgumentCaptor<ClientCreateEvent> eventCaptor; 
 
     @Autowired
     public ClientServiceTest(ClientService clientService,
@@ -52,14 +52,11 @@ class ClientServiceTest {
     @BeforeEach
     void setUp(){
         // GIVEN
-        // Clean all
         clientRepository.deleteAll();
         
-        // Client
         client = TestData.generateClientData();
         clientRepository.save(client);
 
-        // Client request
         request = TestData.generateRequestData();
     }
 
@@ -82,12 +79,12 @@ class ClientServiceTest {
         assertNotNull(savedClient.getPersonId());
 
         // VERIFY KAFKA EVENT
-        eventCaptor = ArgumentCaptor.forClass(ClientEvent.class);
-        verify(clientEventProducer).sendMessage(eventCaptor.capture());
+        eventCaptor = ArgumentCaptor.forClass(ClientCreateEvent.class);
+        verify(clientEventProducer).produceClientEvent(eventCaptor.capture());
         
-        ClientEvent capturedEvent = eventCaptor.getValue();
+        ClientCreateEvent capturedEvent = eventCaptor.getValue();
         assertEquals(savedClient.getClientId(), capturedEvent.getClientId());
-        assertEquals(request.getAccountType().toString(), capturedEvent.getAccountType());
+        assertEquals(request.getAccountType(), capturedEvent.getAccountType());
     }
 
     @Test

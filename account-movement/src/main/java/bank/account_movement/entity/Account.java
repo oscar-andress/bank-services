@@ -2,7 +2,7 @@ package bank.account_movement.entity;
 
 import java.math.BigDecimal;
 
-import bank.account_movement.enumerations.AccountType;
+import bank.common_lib.enumeration.AccountType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

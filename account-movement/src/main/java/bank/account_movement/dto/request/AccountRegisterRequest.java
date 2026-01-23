@@ -2,11 +2,11 @@ package bank.account_movement.dto.request;
 
 import java.math.BigDecimal;
 
+import bank.common_lib.enumeration.AccountType;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import bank.account_movement.enumerations.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

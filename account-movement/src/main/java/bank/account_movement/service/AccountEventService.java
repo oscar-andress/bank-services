@@ -1,7 +1,7 @@
 package bank.account_movement.service;
 
-import bank.account_movement.dto.message.event.ClientEvent;
+import bank.common_lib.event.dto.client.ClientCreateEvent;
 
 public interface AccountEventService {
-    void handleClientCreated(ClientEvent clientEvent);
+    void handleClientCreated(ClientCreateEvent clientEvent);
 }

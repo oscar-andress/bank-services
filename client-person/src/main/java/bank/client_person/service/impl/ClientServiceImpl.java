@@ -48,39 +48,34 @@ public class ClientServiceImpl implements ClientService{
     @Transactional
     public CreateClientResponse registerClient(CreateClientRequest request) {
 
-        // Find existen client
-        clientRepository
-            .findByIdentification(request.getIdentification())
-            .ifPresent( existentClient -> {
-                    throw new ResponseStatusException(
-                                    HttpStatus.CONFLICT, 
-                                    "Client "+ request.getIdentification() + " already registered");
-                    }); 
-        
-        // Map request to entity
+        findClientIfPresentThrowExistent(request.getIdentification());
+
         Client client = clientMapper.toEntity(request);
 
-        // Encode password
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         client.setPassword(encodedPassword);
         
-        // Register client
         Client savedClient = clientRepository.save(client);
 
-        // Compute age
         savedClient.setAge(computeAge(savedClient.getBirthDate()));
         
-        // Compute clientID
         savedClient.setClientId(generateClientId(savedClient.getPersonId()));
 
-        // Update client
         clientRepository.save(savedClient);
 
-        // Event publisher
-        clientEventProducer.sendMessage(clientMapper.toClientEvent(savedClient, request.getAccountType().toString()));
+        clientEventProducer.produceClientEvent(clientMapper.toClientEvent(savedClient, request.getAccountType()));
 
-        // Map client to response
         return clientMapper.toCreateClienteResponse(savedClient);
+    }
+
+    private void findClientIfPresentThrowExistent(String identification){
+        clientRepository
+            .findByIdentification(identification)
+            .ifPresent( existentClient -> {
+                    throw new ResponseStatusException(
+                                    HttpStatus.CONFLICT, 
+                                    "Client "+ identification+ " already registered");
+                    }); 
     }
 
     private String computeAge(LocalDate birthDate) {
@@ -92,12 +87,11 @@ public class ClientServiceImpl implements ClientService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<ClientResponse> getClients(int pageNumber, int pageSize) {
 
-        // Paged clients
         Page<Client> pageClient = clientRepository.findAll(PageRequest.of(pageNumber, pageSize));
         
-        // Map to page response
         return new PageResponse<>(
             pageClient.getContent()
                 .stream()
@@ -111,32 +105,28 @@ public class ClientServiceImpl implements ClientService{
     }
 
     @Override
+    @Transactional
     public ClientUpdateResponse updateClient(ClientUpdateRequest request) {
 
-        // Find client
-        Client client = findClientOrThrow(request.getPersonId());
-        // Update data allowed
+        Client client = findClientOrElseThrowNotFound(request.getPersonId());
         client.setAddress(request.getAddress());
         client.setCellPhone(request.getCellPhone());
 
-        // Save changes
         Client savedClient = clientRepository.save(client);
 
-        // Map to response
         return clientMapper.toClientUpdateResponse(savedClient);
     }
 
     @Override
+    @Transactional
     public void deleteClient(ClientDeleteRequest request) {
 
-        // Find client
-        findClientOrThrow(request.getPersonId());
+        findClientOrElseThrowNotFound(request.getPersonId());
 
-        // Delete client
         clientRepository.deleteById(request.getPersonId());
     }
     
-    private Client findClientOrThrow(Long personId) {
+    private Client findClientOrElseThrowNotFound(Long personId) {
         return clientRepository.findById(personId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
     }

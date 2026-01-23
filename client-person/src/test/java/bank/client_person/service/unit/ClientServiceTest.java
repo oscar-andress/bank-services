@@ -27,7 +27,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
 import bank.client_person.data.TestData;
-import bank.client_person.dto.message.event.ClientEvent;
 import bank.client_person.dto.request.CreateClientRequest;
 import bank.client_person.dto.response.CreateClientResponse;
 import bank.client_person.entity.Client;
@@ -35,6 +34,7 @@ import bank.client_person.kafka.producer.ClientEventProducer;
 import bank.client_person.mapper.ClientMapper;
 import bank.client_person.repository.ClientRepository;
 import bank.client_person.service.impl.ClientServiceImpl;
+import bank.common_lib.event.dto.client.ClientCreateEvent;
 
 @ExtendWith(MockitoExtension.class)
 class ClientServiceTest {
@@ -59,23 +59,19 @@ class ClientServiceTest {
     private CreateClientRequest request;
     private CreateClientResponse response;
     private Client client;
-    private ClientEvent clientEvent;
+    private ClientCreateEvent clientEvent;
     
 
     @BeforeEach
     void setUp(){
         // GIVEN
 
-        // Request
         request = TestData.generateRequestData();
 
-        // Client
         client = TestData.generateClientData();
         
-        // Response
         response = TestData.generateResponseData();
 
-        // Client event
         clientEvent = TestData.generateClientEventData();
     }
 
@@ -95,7 +91,7 @@ class ClientServiceTest {
         when(clientRepository.save(any(Client.class)))
             .thenReturn(client);
         
-        when(clientMapper.toClientEvent(any(Client.class), eq(request.getAccountType().toString())))
+        when(clientMapper.toClientEvent(any(Client.class), eq(request.getAccountType())))
             .thenReturn(clientEvent);
 
         when(clientMapper.toCreateClienteResponse(any(Client.class)))
@@ -114,7 +110,7 @@ class ClientServiceTest {
 
         // VERIFY KAFKA
         verify(clientEventProducer, times(1))
-            .sendMessage(any(ClientEvent.class));
+            .produceClientEvent(any(ClientCreateEvent.class));
         
         Client savedClient = clientCaptor.getValue();
         assertEquals(client.getAge(), savedClient.getAge());

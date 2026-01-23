@@ -35,7 +35,6 @@ public class AccountServiceImpl implements AccountService{
     @Transactional(readOnly = true)
     public List<AccountResponse> getAccounts(String clientId) {
 
-        // Find and map to response
         return accountRespository.findByClientIdOrderByAccountNumber(clientId)
             .stream()
             .map(accountMapper::toAccountResponse)
@@ -47,20 +46,15 @@ public class AccountServiceImpl implements AccountService{
     @Transactional
     public AccountRegisterResponse registerAccount(AccountRegisterRequest request) {
         
-        // Verify existent account
         String accountType = request.getAccountType().toString();
-        findAccountNumberOrThrowExistent(request.getCliendId(), accountType);
+        findAccountIfPresentThrowExistent(request.getCliendId(), accountType);
         
-        // Map to entity
         Account account = accountMapper.toEntity(request);
 
-        // Compute next account number
         account.setAccountNumber(accountRespository.queryFindNextAccountNumber(accountType));
         
-        // Save account
         accountRespository.save(account);
         
-        // Map to response
         return accountMapper.toAccountRegisterResponse(account);
     }
 
@@ -68,35 +62,30 @@ public class AccountServiceImpl implements AccountService{
     @Transactional
     public AccountUpdateResponse updateAccount(AccountUpdateRequest request) {
 
-        // Find account
-        Account account = findAccountOrThrow(request.getAccountId());
+        Account account = findAccountOrElseThrowNotFound(request.getAccountId());
 
-        // Update account
         account.setStatus(request.getStatus());
 
-        // Save changes
         Account savedAccount = accountRespository.save(account);
 
-        // Map to response
         return accountMapper.toAccountUpdateResponse(savedAccount);
     }
 
     @Override
     @Transactional
     public void deleteAccount(AccountDeleteRequest request) {
-        // Find account
-        findAccountOrThrow(request.getAccountId());
+        
+        findAccountOrElseThrowNotFound(request.getAccountId());
    
-        // Delete account
         accountRespository.deleteById(request.getAccountId());
     }
 
-    private Account findAccountOrThrow(Long accountId) {
+    private Account findAccountOrElseThrowNotFound(Long accountId) {
         return accountRespository.findById(accountId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
     }
     
-    private void findAccountNumberOrThrowExistent( String accountId, String accountType){
+    private void findAccountIfPresentThrowExistent( String accountId, String accountType){
         accountRespository.queryFindAccountNumber(accountId, accountType)
             .ifPresent( existenceAccount -> {
                 throw new ResponseStatusException(

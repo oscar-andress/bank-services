@@ -6,13 +6,12 @@ import java.util.Properties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
-import bank.client_person.dto.message.event.ClientEvent;
 import bank.client_person.dto.request.CreateClientRequest;
 import bank.client_person.dto.response.CreateClientResponse;
 import bank.client_person.entity.Client;
-import bank.client_person.enumeration.AccountType;
 import bank.client_person.enumeration.Gender;
-
+import bank.common_lib.enumeration.AccountType;
+import bank.common_lib.event.dto.client.ClientCreateEvent;
 
 public final class TestData {
 
@@ -61,15 +60,14 @@ public final class TestData {
         return response;
     }
 
-    public static ClientEvent generateClientEventData(){
-        ClientEvent clientEvent = new ClientEvent();
-        clientEvent.setAccountType(ACCOUNT_TYPE.toString());
+    public static ClientCreateEvent generateClientEventData(){
+        ClientCreateEvent clientEvent = new ClientCreateEvent();
+        clientEvent.setAccountType(ACCOUNT_TYPE);
         clientEvent.setClientId(CLIENT_ID);
         return clientEvent;
     }
 
     public static Properties generateProperties(String kafkaBosstraperServer){
-        // Properties for events
         Properties consumerProps = new Properties();
         consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBosstraperServer);
         consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, "test-group");

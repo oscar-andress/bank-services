@@ -2,7 +2,7 @@ package bank.account_movement.dto.response;
 
 import java.math.BigDecimal;
 
-import bank.account_movement.enumerations.MovementType;
+import bank.common_lib.enumeration.MovementType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -79,10 +79,28 @@ services:
     networks:
       - bank-network
 
+  postgres-report-service:
+    image: postgres:16
+    container_name: postgres-report-service
+    hostname: postgres-report-service
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: report_service_db
+      POSTGRES_USER: report_service_user
+      POSTGRES_PASSWORD: report_service_pass
+      TZ: America/Guayaquil
+      PGTZ: America/Guayaquil
+    volumes:
+      - report-service-db-data:/var/lib/postgresql/data
+      - ./report-service/db/init:/docker-entrypoint-initdb.d
+    networks:
+      - bank-network
+
   client-person-service:
     build:
-      context: ./client-person
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./client-person/Dockerfile
     image: client-person:latest
     container_name: client-person-service
     depends_on:
@@ -99,8 +117,8 @@ services:
 
   account-movement-service:
     build:
-      context: ./account-movement
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./account-movement/Dockerfile
     image: account-movement:latest
     container_name: account-movement-service
     depends_on:
@@ -115,10 +133,29 @@ services:
     networks:
       - bank-network
 
+  report-service:
+    build:
+      context: .
+      dockerfile: ./report-service/Dockerfile
+    image: report-service:latest
+    container_name: report-service
+    depends_on:
+      - kafka
+      - postgres-report-service
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: ${REPORT_SERVICE_URL}
+      SPRING_DATASOURCE_USERNAME: ${REPORT_SERVICE_USER}
+      SPRING_DATASOURCE_PASSWORD: ${REPORT_SERVICE_PASS}
+    networks:
+      - bank-network
+
 volumes:
   kafka-data:
   client-person-db-data:
   account-movement-db-data:
+  report-service-db-data:
 
 networks:
   bank-network:
