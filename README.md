@@ -11,7 +11,7 @@ El sistema está compuesto por dos microservicios independientes que se comunica
 ---
 
 ## ❇️ Flujo de eventos
-![Event-Driven-Flow](diagrams/event-driven-flow.png)
+![Event-Driven-Flow](diagrams/event-driven-flow-diagram.png)
 
 ---
 
