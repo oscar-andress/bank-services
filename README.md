@@ -6,11 +6,9 @@ Sistema bancario basado en **arquitectura de microservicios**, desarrollado con 
 ---
 ## 🧱 Arquitectura
 
-El sistema está compuesto por dos microservicios independientes que se comunican de forma **asincrónica** mediante **Kafka**
+El sistema está compuesto por tres microservicios independientes que se comunican de forma **asincrónica** mediante **Kafka**
 
----
-
-## ❇️ Flujo de eventos
+### ❇️ Flujo de eventos
 ![Event-Driven-Flow](diagrams/event-driven-flow-diagram.png)
 
 ---
@@ -33,15 +31,27 @@ spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
 ```text
 bank-services/
 │
+├── common-lib/
+│   ├── src/main/java/bank/common_lib
+│   ├── enumeration
+│   ├── event.dto
+|
 ├── client-person/
+│   ├── db/init
 │   ├── src/main/java
 │   ├── src/test/java
 │   ├── Dockerfile
 │   └── application.properties
 │
 ├── account-movement/
+│   ├── db/init
 │   ├── src/main/java
-│   ├── src/test/java
+│   ├── Dockerfile
+│   └── application.properties
+|
+├── report-service/
+│   ├── db/init
+│   ├── src/main/java
 │   ├── Dockerfile
 │   └── application.properties
 │
