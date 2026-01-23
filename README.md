@@ -1,12 +1,12 @@
 # 🏦 Bank Services – Microservicios
 ![Docker](https://img.shields.io/badge/docker-ready-blue)
 
-Sistema bancario basado en **arquitectura de microservicios**, desarrollado con **Spring Boot**, **Apache Kafka**, **PostgreSQL** y **Docker**, enfocado eventos de mensajería asincrónica.
+Sistema bancario basado en **arquitectura de microservicios**, desarrollado con **Spring Boot**, **Apache Kafka**, **PostgreSQL** y **Docker**.
 
 ---
 ## 🧱 Arquitectura
 
-El sistema está compuesto por tres microservicios independientes que se comunican de forma **asincrónica** mediante **Kafka**
+El sistema está compuesto por tres microservicios independientes que se comunican de forma **asincrónica** con **Kafka**
 
 ### 🔁 Flujo de eventos
 ![Event-Driven-Flow](diagrams/event-driven-flow-diagram.png)
@@ -18,7 +18,7 @@ El sistema está compuesto por tres microservicios independientes que se comunic
 ### Variables de entorno
 
 Las configuraciones sensibles de spring boot se externalizan usando variables de entorno. Por ejemplo,
-para abrir una conexion a la base de datos de servicio cliente-persona es la siguiente:
+para abrir una conexión a la base de datos de servicio cliente-persona es la siguiente:
 
 ```properties
 SPRING_DATASOURCE_URL: ${CLIENT_PERSON_URL}
@@ -88,8 +88,8 @@ Incluye **pruebas unitarias y de integracion** para el servicio client-person en
 
 Servicios y/o actualizaciones por agregar:
 
-* Implementar **SPRING SECURITY** para generar token
-* Implementar **SPRING CLOUD GATEWAY** para validar tokens y agregar balanceadores de carga
+* Implementar **SPRING SECURITY** para generar JWT
+* Implementar **SPRING CLOUD GATEWAY** para validar JWT y agregar balanceadores de carga
 * Agregar YAML manifest para deplegar los servicios en Kubernetes y controlar versiones con ArgoCD
 * Agregar pipelines con GitHub Actions para CI/CD
 
