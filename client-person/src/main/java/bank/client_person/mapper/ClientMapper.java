@@ -2,12 +2,13 @@ package bank.client_person.mapper;
 
 import org.springframework.stereotype.Component;
 
-import bank.client_person.dto.message.event.ClientEvent;
 import bank.client_person.dto.request.CreateClientRequest;
 import bank.client_person.dto.response.ClientResponse;
 import bank.client_person.dto.response.ClientUpdateResponse;
 import bank.client_person.dto.response.CreateClientResponse;
 import bank.client_person.entity.Client;
+import bank.common_lib.enumeration.AccountType;
+import bank.common_lib.event.dto.client.ClientCreateEvent;
 
 
 
@@ -53,10 +54,11 @@ public class ClientMapper {
         return response;
     }
 
-    public ClientEvent toClientEvent(Client client, String accountType){
-        ClientEvent event = new ClientEvent();
+    public ClientCreateEvent toClientEvent(Client client, AccountType accountType){
+        ClientCreateEvent event = new ClientCreateEvent();
         event.setClientId(client.getClientId());
         event.setAccountType(accountType);
+        event.setName(client.getName());
         return event;
     }
 }

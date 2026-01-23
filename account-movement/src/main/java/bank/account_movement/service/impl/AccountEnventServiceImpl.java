@@ -4,34 +4,45 @@ import java.math.BigDecimal;
 
 import org.springframework.stereotype.Service;
 
-import bank.account_movement.dto.message.event.ClientEvent;
 import bank.account_movement.entity.Account;
-import bank.account_movement.enumerations.AccountType;
+import bank.account_movement.kafka.producer.AccountEventProducer;
+import bank.account_movement.mapper.AccountMapper;
 import bank.account_movement.repository.AccountRespository;
 import bank.account_movement.service.AccountEventService;
+import bank.common_lib.enumeration.AccountType;
+import bank.common_lib.event.dto.account.AccountCreateEvent;
+import bank.common_lib.event.dto.client.ClientCreateEvent;
 
 @Service
 public class AccountEnventServiceImpl implements AccountEventService{
 
     private final AccountRespository accountRespository;
+    private final AccountEventProducer accountEventProducer;
+    private final AccountMapper accountMapper;
 
-    AccountEnventServiceImpl(AccountRespository accountRespository){
+    AccountEnventServiceImpl(AccountRespository accountRespository,
+                             AccountEventProducer accountEventProducer,
+                             AccountMapper accountMapper
+    ){
         this.accountRespository = accountRespository;
+        this.accountEventProducer = accountEventProducer;
+        this.accountMapper = accountMapper;
     }
 
     @Override
-    public void handleClientCreated(ClientEvent clientEvent) {
+    public void handleClientCreated(ClientCreateEvent clientEvent) {
 
         String clientId = clientEvent.getClientId();
         
-        // Has account
-        if(hasAccount(clientId, clientEvent.getAccountType())) return;
+        if(hasAccount(clientId, clientEvent.getAccountType().toString())) return;
 
-        // Create default account
         Account account = createDefaultAccount(clientId, clientEvent.getAccountType());
 
-        // Save account
-        accountRespository.save(account);
+        Account savedAccount = accountRespository.save(account);
+
+        AccountCreateEvent accountEvent = accountMapper.toAccountCreateEvent(savedAccount);
+
+        accountEventProducer.produceCreateAccount(accountEvent);
     }
 
     private boolean hasAccount( String clientId, String accountType){
@@ -39,12 +50,11 @@ public class AccountEnventServiceImpl implements AccountEventService{
             .isPresent();
     }
 
-    private Account createDefaultAccount(String clientId, String accountType){
+    private Account createDefaultAccount(String clientId, AccountType accountType){
         
-        // Create default account
         Account account = new Account();
-        account.setAccountNumber(accountRespository.queryFindNextAccountNumber(accountType));
-        account.setAccountType(AccountType.valueOf(accountType));
+        account.setAccountNumber(accountRespository.queryFindNextAccountNumber(accountType.name()));
+        account.setAccountType(accountType);
         account.setClientId(clientId);
         account.setInitialBalance(BigDecimal.ZERO);
         return account;

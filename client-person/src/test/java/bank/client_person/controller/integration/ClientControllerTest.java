@@ -79,11 +79,9 @@ class ClientControllerTest {
     void setUp() throws JsonProcessingException{
         // GIVEN
         
-        // Data to String JSON
         request = objectMapper.writeValueAsString(TestData.generateRequestData());
         clientEvent = objectMapper.writeValueAsString(TestData.generateClientEventData());
         
-        // PROPS CONSUMER 
         consumerProps = TestData.generateProperties(kafka.getBootstrapServers());
     }
 

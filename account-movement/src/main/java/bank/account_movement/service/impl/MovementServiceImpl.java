@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import bank.account_movement.domain.movement.factory.MovementOperationFactory;
+import bank.account_movement.domain.movement.operation.MovementOperation;
 import bank.account_movement.dto.request.MovementDeleteRequest;
 import bank.account_movement.dto.request.MovementRegisterRequest;
 import bank.account_movement.dto.response.MovementRegisterResponse;
@@ -16,12 +18,13 @@ import bank.account_movement.dto.response.MovementResponse;
 import bank.account_movement.dto.response.PageResponse;
 import bank.account_movement.entity.Account;
 import bank.account_movement.entity.Movement;
-import bank.account_movement.enumerations.MovementType;
+import bank.account_movement.kafka.producer.MovementEventProducer;
 import bank.account_movement.mapper.MovementMapper;
 import bank.account_movement.repository.AccountRespository;
 import bank.account_movement.repository.MovementRepository;
-import bank.account_movement.service.AccountOperationService;
 import bank.account_movement.service.MovementService;
+import bank.common_lib.event.dto.movement.MovementCreateEvent;
+import bank.common_lib.event.dto.movement.MovementDeleteEvent;
 
 @Service
 public class MovementServiceImpl implements MovementService{
@@ -29,42 +32,46 @@ public class MovementServiceImpl implements MovementService{
     private final MovementRepository movementRepository;
     private final AccountRespository accountRespository;
     private final MovementMapper movementMapper;
-    private final AccountOperationService accountOperationService;
+    private final MovementOperationFactory movementOperationFactory;
+    private final MovementEventProducer movementEventProducer;
 
     MovementServiceImpl(MovementRepository movementRepository,
                         AccountRespository accountRespository,
                         MovementMapper movementMapper,
-                        AccountOperationService accountOperationService){
+                        MovementOperationFactory movementOperationFactory,
+                        MovementEventProducer movementEventProducer){
         this.movementRepository = movementRepository;
         this.accountRespository = accountRespository;
         this.movementMapper = movementMapper;
-        this.accountOperationService = accountOperationService;
+        this.movementOperationFactory = movementOperationFactory;
+        this.movementEventProducer = movementEventProducer;
     }
 
     @Override
     @Transactional
     public MovementRegisterResponse registerMovement(MovementRegisterRequest request) {
         
-        // Find account
         Account account = findAccountOrElseThrow(request.getAccountId());
         
-        // Maper to entity
         Movement movement = movementMapper.toEntity(request);
 
-        // Process movement
-        BigDecimal balance = processMovement(request.getMovementType(), 
-                                             account.getInitialBalance(), 
-                                             request.getValue());
+        MovementOperation movementOperation = movementOperationFactory.getOperation(request.getMovementType());
         
-        // Update the initial balance account
+        BigDecimal balance = movementOperation.processMovement(account.getInitialBalance(), request.getValue());
+        // processMovement(request.getMovementType(), 
+        //                                      account.getInitialBalance(), 
+        //                                      request.getValue());
+        
         account.setInitialBalance(balance);
         accountRespository.save(account);
 
-        // Save the movement
         movement.setBalance(balance);
-        movementRepository.save(movement);
+        Movement savedMovement =movementRepository.save(movement);
+
+        MovementCreateEvent movementEvent = movementMapper.toMovementCreateEvent(savedMovement);
+
+        movementEventProducer.produceCreateMovement(movementEvent);
     
-        // Map to response
         return movementMapper.toMovementRegisterResponse(movement);
     }
 
@@ -92,44 +99,46 @@ public class MovementServiceImpl implements MovementService{
     @Transactional
     public void deleteMovement(MovementDeleteRequest request) {
 
-        // Find movement
         Movement movement = findMovementOrElseThrow(request.getMovementId());
 
-        // Find account
         Account account = findAccountOrElseThrow(movement.getAccountId());
 
-        // Process reverse
-        BigDecimal balance = processMovementReverse(movement.getMovementType(), 
-                                                    account.getInitialBalance(), 
-                                                    movement.getValue());
+        MovementOperation movementOperation = movementOperationFactory.getOperation(movement.getMovementType());
+        BigDecimal balance = movementOperation.reverseMovement(account.getInitialBalance(), movement.getValue());
+        
+        // BigDecimal balance = processMovementReverse(movement.getMovementType(), 
+        //                                             account.getInitialBalance(), 
+        //                                             movement.getValue());
 
-        // Update the account
         account.setInitialBalance(balance);
         accountRespository.save(account);
 
-        // Delete the movement
         movementRepository.deleteById(request.getMovementId());
+
+        MovementDeleteEvent movementDeleteEvent = movementMapper.toMovementDeleteEvent(movement, balance);
+
+        movementEventProducer.produceDeleteMovement(movementDeleteEvent);
     }
 
-    private BigDecimal processMovement(MovementType movementType, BigDecimal initialBalance, BigDecimal value) {
-        return switch (movementType) {
-            case DEPOSIT -> accountOperationService.processDeposit(initialBalance, value);
-            case WITHDRAWAL -> accountOperationService.processWithdrawal(initialBalance, value);
-            default -> throw new ResponseStatusException(
-                HttpStatus.CONFLICT, "Unsupported movement type: " + movementType
-            );
-        };
-    }
+    // private BigDecimal processMovement(MovementType movementType, BigDecimal initialBalance, BigDecimal value) {
+    //     return switch (movementType) {
+    //         case DEPOSIT -> accountOperationService.processDeposit(initialBalance, value);
+    //         case WITHDRAWAL -> accountOperationService.processWithdrawal(initialBalance, value);
+    //         default -> throw new ResponseStatusException(
+    //             HttpStatus.CONFLICT, "Unsupported movement type: " + movementType
+    //         );
+    //     };
+    // }
 
-    private BigDecimal processMovementReverse(MovementType movementType, BigDecimal initialBalance, BigDecimal value) {
-        return switch (movementType) {
-            case DEPOSIT -> accountOperationService.reverseDeposit(initialBalance, value);
-            case WITHDRAWAL -> accountOperationService.reverseWithdrawal(initialBalance, value);
-            default -> throw new ResponseStatusException(
-                HttpStatus.CONFLICT, "Unsupported movement reverse type: " + movementType
-            );
-        };
-    }
+    // private BigDecimal processMovementReverse(MovementType movementType, BigDecimal initialBalance, BigDecimal value) {
+    //     return switch (movementType) {
+    //         case DEPOSIT -> accountOperationService.reverseDeposit(initialBalance, value);
+    //         case WITHDRAWAL -> accountOperationService.reverseWithdrawal(initialBalance, value);
+    //         default -> throw new ResponseStatusException(
+    //             HttpStatus.CONFLICT, "Unsupported movement reverse type: " + movementType
+    //         );
+    //     };
+    // }
 
     private Account findAccountOrElseThrow(long accountId){
         return accountRespository.findById(accountId)

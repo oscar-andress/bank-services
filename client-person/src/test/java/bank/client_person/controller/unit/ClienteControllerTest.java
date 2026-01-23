@@ -53,7 +53,7 @@ class ClienteControllerTest {
     @BeforeEach
     void setUp() throws JsonProcessingException{
         // GIVEN
-        // Parse data to String JSON
+
         request = TestData.generateRequestData();
         stringJsonRequest = objectMapper.writeValueAsString(request);
         response = TestData.generateResponseData();

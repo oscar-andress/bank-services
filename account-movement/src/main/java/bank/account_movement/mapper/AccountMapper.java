@@ -7,6 +7,7 @@ import bank.account_movement.dto.response.AccountRegisterResponse;
 import bank.account_movement.dto.response.AccountResponse;
 import bank.account_movement.dto.response.AccountUpdateResponse;
 import bank.account_movement.entity.Account;
+import bank.common_lib.event.dto.account.AccountCreateEvent;
 
 @Component
 public class AccountMapper {
@@ -42,5 +43,14 @@ public class AccountMapper {
         response.setAccountId(account.getAccountId());
         response.setStatus(account.getStatus());
         return response;
+    }
+
+    public AccountCreateEvent toAccountCreateEvent(Account account){
+        AccountCreateEvent event = new AccountCreateEvent();
+        event.setAccountId(account.getAccountId());
+        event.setAccountNumber(account.getAccountNumber());
+        event.setAccountType(account.getAccountType());
+        event.setClientId(account.getClientId());
+        return event;
     }
 }

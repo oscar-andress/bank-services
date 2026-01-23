@@ -2,8 +2,8 @@ package bank.client_person.dto.request;
 
 import java.time.LocalDate;
 
-import bank.client_person.enumeration.AccountType;
 import bank.client_person.enumeration.Gender;
+import bank.common_lib.enumeration.AccountType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;

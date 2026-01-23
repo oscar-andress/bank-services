@@ -18,17 +18,14 @@ public class AccountOperationService {
 
         validatePositiveValue(value);
 
-        // No balance (0) and withdral
         if(initialBalance.equals(BigDecimal.ZERO)){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Not enought balance to withdrawal");
         }
 
-        // Initial balance < withdrawal 
         if(initialBalance.compareTo(value) < 0){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Not enought balance to withdrawal");
         }
 
-        // Substract the withdrawal value
         return initialBalance.subtract(value);
     }
 
@@ -48,7 +45,6 @@ public class AccountOperationService {
     }
 
     private void validatePositiveValue(BigDecimal value){
-        // 0 or negative withdrawal values
         if(value.compareTo(BigDecimal.ZERO) <= 0){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Not allowed 0 withdrawal values");
         }

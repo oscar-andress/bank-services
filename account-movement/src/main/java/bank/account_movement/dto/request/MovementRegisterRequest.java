@@ -2,7 +2,7 @@ package bank.account_movement.dto.request;
 
 import java.math.BigDecimal;
 
-import bank.account_movement.enumerations.MovementType;
+import bank.common_lib.enumeration.MovementType;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
