@@ -1,14 +1,14 @@
 # 🏦 Bank Services – Microservicios
 ![Docker](https://img.shields.io/badge/docker-ready-blue)
 
-Sistema bancario basado en **arquitectura de microservicios**, desarrollado con **Spring Boot**, **Apache Kafka**, **PostgreSQL** y **Docker**, enfocado en buenas prácticas de diseño, mensajería asincrónica y pruebas. 
+Sistema bancario basado en **arquitectura de microservicios**, desarrollado con **Spring Boot**, **Apache Kafka**, **PostgreSQL** y **Docker**, enfocado eventos de mensajería asincrónica.
 
 ---
 ## 🧱 Arquitectura
 
 El sistema está compuesto por tres microservicios independientes que se comunican de forma **asincrónica** mediante **Kafka**
 
-### ❇️ Flujo de eventos
+### 🔁 Flujo de eventos
 ![Event-Driven-Flow](diagrams/event-driven-flow-diagram.png)
 
 ---
@@ -76,10 +76,21 @@ bank-services/
 
 ## 🧪 Testing
 
-Includes **unit and integration tests** for:
+Incluye **pruebas unitarias y de integracion** para el servicio client-person en:
 
 * Controllers
 * Services
+
+---
+
+## 🌱 Trabajo futuro
+
+Servicios y/o actualizaciones por agregar:
+
+* Implementar **SPRING SECURITY** para generar token
+* Implementar **SPRING CLOUD GATEWAY** para validar tokens y agregar balanceadores de carga
+* Agregar YAML manifest para deplegar los servicios en Kubernetes y controlar versiones con ArgoCD
+* Agregar pipelines con GitHub Actions para CI/CD
 
 ---
 
