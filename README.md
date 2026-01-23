@@ -17,12 +17,13 @@ El sistema está compuesto por tres microservicios independientes que se comunic
 
 ### Variables de entorno
 
-Las configuraciones sensibles se externalizan usando variables de entorno:
+Las configuraciones sensibles de spring boot se externalizan usando variables de entorno. Por ejemplo,
+para abrir una conexion a la base de datos de servicio cliente-persona es la siguiente:
 
 ```properties
-spring.datasource.url=${SPRING_DATASOURCE_URL}
-spring.datasource.username=${SPRING_DATASOURCE_USERNAME}
-spring.datasource.password=${SPRING_DATASOURCE_PASSWORD}
+SPRING_DATASOURCE_URL: ${CLIENT_PERSON_URL}
+SPRING_DATASOURCE_USERNAME: ${CLIENT_PERSON_USER}
+SPRING_DATASOURCE_PASSWORD: ${CLIENT_PERSON_PASS}
 ```
 
 ---
@@ -34,7 +35,7 @@ bank-services/
 ├── common-lib/
 │   ├── src/main/java/bank/common_lib
 │   ├── enumeration
-│   ├── event.dto
+│   ├── event/dto
 |
 ├── client-person/
 │   ├── db/init
