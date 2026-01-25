@@ -1,24 +1,23 @@
-# 🏦 Bank Services – Microservicios
+# 🏦 Bank Services – Microservices
 ![Docker](https://img.shields.io/badge/docker-ready-blue)
 
-Sistema bancario basado en **arquitectura de microservicios**, desarrollado con **Spring Boot**, **Apache Kafka**, **PostgreSQL** y **Docker**.
+Bank system based on **microservices and event-driven architecture**.
 
 ---
-## 🧱 Arquitectura
+## 🧱 Architecture
 
-El sistema está compuesto por tres microservicios independientes que se comunican de forma **asincrónica** con **Kafka**
+System has three main microservices which communicates synchronically using **Kafka**
 
-### 🔁 Flujo de eventos
+### 🔁 Event flow
 ![Event-Driven-Flow](diagrams/event-driven-flow-diagram.png)
 
 ---
 
-## ⚙️ Configuración
+## ⚙️ Configuration
 
-### Variables de entorno
+### Enviroment variables
 
-Las configuraciones sensibles de spring boot se externalizan usando variables de entorno. Por ejemplo,
-para abrir una conexión a la base de datos de servicio cliente-persona es la siguiente:
+Sensitive configuration for spring booot were stored in a .env file, such as:
 
 ```properties
 SPRING_DATASOURCE_URL: ${CLIENT_PERSON_URL}
@@ -27,7 +26,7 @@ SPRING_DATASOURCE_PASSWORD: ${CLIENT_PERSON_PASS}
 ```
 
 ---
-## 📂 Estructura del proyecto
+## 📂 Project Structure
 
 ```text
 bank-services/
@@ -77,21 +76,18 @@ bank-services/
 
 ## 🧪 Testing
 
-Incluye **pruebas unitarias y de integracion** para el servicio client-person en:
+Includes **unit and integration** for client-person service:
 
 * Controllers
 * Services
 
 ---
 
-## 🌱 Trabajo futuro
+## 🌱 Future imrpovements
 
-Servicios y/o actualizaciones por agregar:
-
-* Implementar **SPRING SECURITY** para generar JWT
-* Implementar **SPRING CLOUD GATEWAY** para validar JWT y agregar balanceadores de carga
-* Agregar YAML manifest para deplegar los servicios en Kubernetes y controlar versiones con ArgoCD
-* Agregar pipelines con GitHub Actions para CI/CD
+* Implement **SPRING SECURITY** for token authentication.
+* Implement **SPRING CLOUD GATEWAY** for token validation and load balancers.
+* Implement GitHub Actions for CI/CD pipelines
 
 ---
 
