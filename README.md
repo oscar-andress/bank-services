@@ -6,7 +6,7 @@ Bank system based on **microservices and event-driven architecture**.
 ---
 ## 🧱 Architecture
 
-System has three main microservices which communicates synchronically using **Kafka**
+System have three main microservices which communicates asynchronically using **Kafka**
 
 ### 🔁 Event flow
 ![Event-Driven-Flow](diagrams/event-driven-flow-diagram.png)
