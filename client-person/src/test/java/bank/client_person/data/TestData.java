@@ -64,6 +64,7 @@ public final class TestData {
         ClientCreateEvent clientEvent = new ClientCreateEvent();
         clientEvent.setAccountType(ACCOUNT_TYPE);
         clientEvent.setClientId(CLIENT_ID);
+        clientEvent.setName(NAME);
         return clientEvent;
     }
 

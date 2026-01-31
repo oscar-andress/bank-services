@@ -16,11 +16,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +27,7 @@ import bank.client_person.controller.ClienteController;
 import bank.client_person.data.TestData;
 import bank.client_person.dto.request.CreateClientRequest;
 import bank.client_person.dto.response.CreateClientResponse;
+import bank.client_person.handler.client.ClientAlreadyExistsException;
 import bank.client_person.service.ClientService;
 
 
@@ -84,8 +83,7 @@ class ClienteControllerTest {
     void registerClient_Success_WhenClientExists() throws Exception{
 
         // WHEN
-        doThrow(new ResponseStatusException(
-            HttpStatus.CONFLICT,
+        doThrow(new ClientAlreadyExistsException(
             "Client "+ request.getIdentification()+ " already registered"
         )).when(clientService).registerClient(any(CreateClientRequest.class));
         
