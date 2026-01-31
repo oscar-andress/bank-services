@@ -11,15 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.web.server.ResponseStatusException;
 
 import bank.client_person.data.TestData;
 import bank.client_person.dto.request.CreateClientRequest;
 import bank.client_person.dto.response.CreateClientResponse;
 import bank.client_person.entity.Client;
+import bank.client_person.handler.client.ClientAlreadyExistsException;
 import bank.client_person.kafka.producer.ClientEventProducer;
 import bank.client_person.repository.ClientRepository;
 import bank.client_person.service.ClientService;
@@ -91,14 +90,12 @@ class ClientServiceTest {
     void registerClient_Success_WhenClientExist(){
 
         // ACT
-        ResponseStatusException result = assertThrows(
-            ResponseStatusException.class, 
+        ClientAlreadyExistsException result = assertThrows(
+            ClientAlreadyExistsException.class, 
             () -> clientService.registerClient(request));
         
         // THEN
-        assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
-        assertTrue(result.getReason().contains("Client "+ request.getIdentification() +" already registered"));
-    
+        assertTrue(result.getMessage().contains("Client "+ request.getIdentification() +" already registered"));
     }
 
 

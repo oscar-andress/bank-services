@@ -58,9 +58,6 @@ public class MovementServiceImpl implements MovementService{
         MovementOperation movementOperation = movementOperationFactory.getOperation(request.getMovementType());
         
         BigDecimal balance = movementOperation.processMovement(account.getInitialBalance(), request.getValue());
-        // processMovement(request.getMovementType(), 
-        //                                      account.getInitialBalance(), 
-        //                                      request.getValue());
         
         account.setInitialBalance(balance);
         accountRespository.save(account);
@@ -105,10 +102,6 @@ public class MovementServiceImpl implements MovementService{
 
         MovementOperation movementOperation = movementOperationFactory.getOperation(movement.getMovementType());
         BigDecimal balance = movementOperation.reverseMovement(account.getInitialBalance(), movement.getValue());
-        
-        // BigDecimal balance = processMovementReverse(movement.getMovementType(), 
-        //                                             account.getInitialBalance(), 
-        //                                             movement.getValue());
 
         account.setInitialBalance(balance);
         accountRespository.save(account);
@@ -119,26 +112,6 @@ public class MovementServiceImpl implements MovementService{
 
         movementEventProducer.produceDeleteMovement(movementDeleteEvent);
     }
-
-    // private BigDecimal processMovement(MovementType movementType, BigDecimal initialBalance, BigDecimal value) {
-    //     return switch (movementType) {
-    //         case DEPOSIT -> accountOperationService.processDeposit(initialBalance, value);
-    //         case WITHDRAWAL -> accountOperationService.processWithdrawal(initialBalance, value);
-    //         default -> throw new ResponseStatusException(
-    //             HttpStatus.CONFLICT, "Unsupported movement type: " + movementType
-    //         );
-    //     };
-    // }
-
-    // private BigDecimal processMovementReverse(MovementType movementType, BigDecimal initialBalance, BigDecimal value) {
-    //     return switch (movementType) {
-    //         case DEPOSIT -> accountOperationService.reverseDeposit(initialBalance, value);
-    //         case WITHDRAWAL -> accountOperationService.reverseWithdrawal(initialBalance, value);
-    //         default -> throw new ResponseStatusException(
-    //             HttpStatus.CONFLICT, "Unsupported movement reverse type: " + movementType
-    //         );
-    //     };
-    // }
 
     private Account findAccountOrElseThrow(long accountId){
         return accountRespository.findById(accountId)

@@ -5,11 +5,9 @@ import java.time.Period;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import bank.client_person.dto.request.ClientDeleteRequest;
 import bank.client_person.dto.request.ClientUpdateRequest;
@@ -19,6 +17,8 @@ import bank.client_person.dto.response.ClientUpdateResponse;
 import bank.client_person.dto.response.CreateClientResponse;
 import bank.client_person.dto.response.PageResponse;
 import bank.client_person.entity.Client;
+import bank.client_person.handler.client.ClientAlreadyExistsException;
+import bank.client_person.handler.client.ClientNotFoundException;
 import bank.client_person.kafka.producer.ClientEventProducer;
 import bank.client_person.mapper.ClientMapper;
 import bank.client_person.repository.ClientRepository;
@@ -72,8 +72,7 @@ public class ClientServiceImpl implements ClientService{
         clientRepository
             .findByIdentification(identification)
             .ifPresent( existentClient -> {
-                    throw new ResponseStatusException(
-                                    HttpStatus.CONFLICT, 
+                    throw new ClientAlreadyExistsException(
                                     "Client "+ identification+ " already registered");
                     }); 
     }
@@ -128,6 +127,6 @@ public class ClientServiceImpl implements ClientService{
     
     private Client findClientOrElseThrowNotFound(Long personId) {
         return clientRepository.findById(personId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found"));
+            .orElseThrow(() -> new ClientNotFoundException("Client not found"));
     }
 }

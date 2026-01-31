@@ -22,14 +22,13 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.server.ResponseStatusException;
 
 import bank.client_person.data.TestData;
 import bank.client_person.dto.request.CreateClientRequest;
 import bank.client_person.dto.response.CreateClientResponse;
 import bank.client_person.entity.Client;
+import bank.client_person.handler.client.ClientAlreadyExistsException;
 import bank.client_person.kafka.producer.ClientEventProducer;
 import bank.client_person.mapper.ClientMapper;
 import bank.client_person.repository.ClientRepository;
@@ -126,10 +125,9 @@ class ClientServiceTest {
             .thenReturn(Optional.of(client));
 
         // ACT - THEN
-        ResponseStatusException result = assertThrows(ResponseStatusException.class, 
+        ClientAlreadyExistsException result = assertThrows(ClientAlreadyExistsException.class, 
                      () -> clientServiceImpl.registerClient(request));
 
-        assertEquals(HttpStatus.CONFLICT, result.getStatusCode());
         assertTrue(result.getMessage().contains("Client "+ request.getIdentification() + " already registered"));
         
         verifyNoInteractions(passwordEncoder);
