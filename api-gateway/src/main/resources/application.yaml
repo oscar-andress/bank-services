@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: authentication-service
+              uri: http://127.0.0.1:8087
+              predicates:
+                - Path=/bank/api/v1/auth/client
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8086/realms/bank-microservices-realm
+
+server:
+  port: 8088
