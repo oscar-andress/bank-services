@@ -11,6 +11,11 @@ spring:
               uri: http://127.0.0.1:8087
               predicates:
                 - Path=/bank/api/v1/auth/client
+            - id: client-person
+              uri: http://127.0.0.1:8083
+              predicates:
+                - Path=/bank/api/v1/**
+
   security:
     oauth2:
       resourceserver:
