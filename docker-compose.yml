@@ -43,6 +43,38 @@ services:
     networks:
       - bank-network
 
+  postgres-keycloak-service:
+    image: postgres:16
+    container_name: postgres-keycloak-service
+    environment:
+      POSTGRES_DB: ${POSTGRES_KEYCLOAK_DB}
+      POSTGRES_USER: ${POSTGRES_KEYCLOAK_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_KEYCLOAK_PASSWORD}
+      TZ: America/Guayaquil
+      PGTZ: America/Guayaquil
+    volumes:
+      - postgres-keycloak-db-data:/var/lib/postgresql/data
+    ports:
+      - "5436:5432"
+    networks:
+      - bank-network
+
+  keycloak-service:
+    image: quay.io/keycloak/keycloak:24.0.2
+    container_name: keycloak-service
+    depends_on: 
+      - postgres-keycloak-service
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      TZ: America/Guayaquil
+      JAVA_OPTS: "-Xms256m -Xmx512m"
+    ports:
+      - "8086:8080"
+    networks:
+      - bank-network
+
   postgres-client-person:
     image: postgres:16
     container_name: postgres-client-person
@@ -106,6 +138,7 @@ services:
     depends_on:
       - kafka
       - postgres-client-person
+      - keycloak-service
     ports:
       - "8083:8083"
     environment:
@@ -151,11 +184,38 @@ services:
     networks:
       - bank-network
 
+  api-gateway-service:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    image: api-gateway-service:latest
+    container_name: api-gateway-service
+    depends_on:
+      - keycloak-service
+    ports:
+      - "8088:8088"
+    networks:
+      - bank-network
+
+  authentication-service:
+    build:
+      context: ./authentication-service
+      dockerfile: Dockerfile
+    image: authentication-service:latest
+    container_name: authentication-service
+    depends_on:
+      - keycloak-service
+    ports:
+      - "8087:8087"
+    networks:
+      - bank-network      
+
 volumes:
   kafka-data:
   client-person-db-data:
   account-movement-db-data:
   report-service-db-data:
+  postgres-keycloak-db-data:
 
 networks:
   bank-network:
