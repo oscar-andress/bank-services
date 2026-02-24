@@ -15,12 +15,25 @@ spring:
               uri: http://client-person-service:8083
               predicates:
                 - Path=/bank/api/v1/client/**
+              filters:
+              - name: RequestRateLimiter
+                args:
+                  redis-rate-limiter.replenishRate: 5
+                  redis-rate-limiter.burstCapacity: 10
+                  redis-rate-limiter.requestedTokens: 1
+                  keyresolver: "#{@tokenKeyResolver}"
 
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://keycloak-service:8080/realms/bank-microservices-realm
+  
+  data:
+    redis:
+      host: redis-service
+      port: 6379
+      timeout: 2s
 
 server:
   port: 8088
