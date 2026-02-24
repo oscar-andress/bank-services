@@ -75,6 +75,21 @@ services:
     networks:
       - bank-network
 
+  redis-service:
+    image: redis:7
+    container_name: redis-service
+    ports:
+      - "6379:6379"
+    environment:
+      TZ: America/Guayaquil
+    mem_limit: 256m
+    command: >
+      redis-server
+      --maxmemory 200mb
+      --maxmemory-policy allkeys-lru
+    networks:
+      - bank-network
+
   postgres-client-person:
     image: postgres:16
     container_name: postgres-client-person
@@ -192,6 +207,7 @@ services:
     container_name: api-gateway-service
     depends_on:
       - keycloak-service
+      - redis-service
     ports:
       - "8088:8088"
     networks:
