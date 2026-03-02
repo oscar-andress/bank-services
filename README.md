@@ -6,7 +6,22 @@ Bank system based on **microservices and event-driven architecture**.
 ---
 ## 🧱 Architecture
 
-System have three main microservices which communicates asynchronically using **Kafka**
+System is divided into several microservices, each handling specific funtions. Below is provided an overview of each microservice:
+
+
+### 1. API Gateway 🌐
+
+*Description: The single entry point for all client requests, routing them to the appropriate microservices.
+*Technology: Spring Cloud Gateway and Redis
+*Features: Security handling, routing and rate limiting.
+
+### 2. Authentication service 🔐
+
+*Description: Handles user authentication, token and identity management.
+*Technology: Keycloak
+*Features: User registration, login and authentication tokens
+
+
 
 ### 🔁 Event flow
 ![Event-Driven-Flow](diagrams/event-driven-flow-diagram.png)
@@ -66,11 +81,14 @@ bank-services/
 * Java 17+
 * Spring Boot
 * Spring Kafka
+* Spring Cloud
 * Apache Kafka (KRaft mode)
+* Keycloak
+* Redis
 * PostgreSQL
 * Docker & Docker Compose
 * JUnit 5 / Mockito
-* Testcontainers (tests de integración)
+* Testcontainers
 
 ---
 
@@ -85,8 +103,7 @@ Includes **unit and integration** for client-person service:
 
 ## 🌱 Future imrpovements
 
-* Implement **SPRING SECURITY** for token authentication.
-* Implement **SPRING CLOUD GATEWAY** for token validation and load balancers.
+* Use **SPRING CLOUD GATEWAY** for load balancing.
 * Implement GitHub Actions for CI/CD pipelines
 
 ---
