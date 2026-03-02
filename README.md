@@ -11,15 +11,15 @@ System is divided into several microservices, each handling specific funtions. B
 
 ### 1. API Gateway 🌐
 
-*Description: The single entry point for all client requests, routing them to the appropriate microservices.
-*Technology: Spring Cloud Gateway and Redis
-*Features: Security handling, routing and rate limiting.
+* Description: The single entry point for all client requests, routing them to the appropriate microservices.
+* Technology: Spring Cloud Gateway and Redis
+* Features: Security handling, routing and rate limiting.
 
 ### 2. Authentication service 🔐
 
-*Description: Handles user authentication, token and identity management.
-*Technology: Keycloak
-*Features: User registration, login and authentication tokens
+* Description: Handles user authentication, token and identity management.
+* Technology: Keycloak
+* Features: User registration, login and authentication tokens
 
 
 
