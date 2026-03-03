@@ -12,16 +12,32 @@ System is divided into several microservices, each handling specific funtions. B
 ### 1. API Gateway 🌐
 
 * Description: The single entry point for all client requests, routing them to the appropriate microservices.
-* Technology: Spring Cloud Gateway and Redis
+* Technology: Spring Cloud Gateway, and Redis.
 * Features: Security handling, routing and rate limiting.
 
 ### 2. Authentication service 🔐
 
 * Description: Handles user authentication, token and identity management.
-* Technology: Keycloak
-* Features: User registration, login and authentication tokens
+* Technology: Spring Boot, Keycloak, and PostgreSQL.
+* Features: User registration, login and authentication tokens.
 
+### 3. Client service 🤵‍♂️
 
+* Description: Manages client information.
+* Technology: Spring boot, Keycloak, Spring Kafka, and PostgreSQL.
+* Features: GET-POST-PUT-DELETE operations for clients.
+
+### 4. Account-Movement service 💳
+
+* Description: Manages account and movements information.
+* Technology: Spring boot, Keycloak, Spring Kafka, and PostgreSQL.
+* Features: GET-POST-PUT-DELETE operations for client and accounts.
+
+### 5. Report service 🧾
+
+* Description: Manages the detailed information of clients, accounts and movements.
+* Technology: Spring boot, Keycloak, Spring Kafka, and PostgreSQL.
+* Features: GET operation for reports.
 
 ### 🔁 Event flow
 ![Event-Driven-Flow](diagrams/event-driven-flow-diagram.png)
