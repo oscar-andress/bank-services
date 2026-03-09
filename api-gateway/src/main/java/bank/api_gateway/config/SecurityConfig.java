@@ -19,6 +19,7 @@ public class SecurityConfig {
                 .csrf(CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/bank/api/v1/auth/client").permitAll()
+                        .pathMatchers("/actuator/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
