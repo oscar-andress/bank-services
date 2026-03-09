@@ -42,5 +42,31 @@ spring:
       port: 6379
       timeout: 2s
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  zipkin:
+    tracing:
+      endpoint: "http://tempo:9411/api/v2/spans"
+  endpoint:
+    health:
+      show:
+        details: "always"
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  tracing:
+    sampling:
+      probability: 1.0
+
 server:
   port: 8088
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level traceId=%X{traceId} spanId=%X{spanId} %logger - %msg%n"
