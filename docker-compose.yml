@@ -210,6 +210,8 @@ services:
       - redis-service
     ports:
       - "8088:8088"
+    labels:
+      collect_logs: "true"
     networks:
       - bank-network
 
@@ -223,6 +225,10 @@ services:
       - keycloak-service
     ports:
       - "8087:8087"
+    environment:
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
+    labels:
+      collect_logs: "true"
     networks:
       - bank-network
 
