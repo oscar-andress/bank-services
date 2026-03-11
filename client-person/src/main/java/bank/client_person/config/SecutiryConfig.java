@@ -16,11 +16,12 @@ public class SecutiryConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(requests -> requests
-                .anyRequest().authenticated()
-            )
-            .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
-            .build();
+                .authorizeHttpRequests(requests -> {
+                    requests.requestMatchers("/actuator/**").permitAll();
+                    requests.anyRequest().authenticated();
+                })
+                .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
+                .build();
     }
     
     @Bean
