@@ -29,6 +29,28 @@ spring:
                   redis-rate-limiter.burstCapacity: 10
                   redis-rate-limiter.requestedTokens: 1
                   keyresolver: "#{@tokenKeyResolver}"
+            - id: account-movement
+              uri: http://account-movement-service:8084
+              predicates:
+                - Path=/bank/api/v1/account/**,/bank/api/v1/movement/**
+              filters:
+              - name: RequestRateLimiter
+                args:
+                  redis-rate-limiter.replenishRate: 5
+                  redis-rate-limiter.burstCapacity: 10
+                  redis-rate-limiter.requestedTokens: 1
+                  keyresolver: "#{@tokenKeyResolver}"
+            - id: report-service
+              uri: http://report-service:8085
+              predicates:
+                - Path=/bank/api/v1/report/**
+              filters:
+              - name: RequestRateLimiter
+                args:
+                  redis-rate-limiter.replenishRate: 5
+                  redis-rate-limiter.burstCapacity: 10
+                  redis-rate-limiter.requestedTokens: 1
+                  keyresolver: "#{@tokenKeyResolver}"
 
   security:
     oauth2:
