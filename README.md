@@ -1,4 +1,4 @@
-# 🏦 Bank Services – Microservices
+# 🏦 Bank Microservices
 ![Docker](https://img.shields.io/badge/docker-ready-blue)
 
 Bank system based on **microservices, event-driven architecture and observability**.
@@ -101,6 +101,9 @@ bank-services/
 * Apache Kafka (KRaft mode)
 * Keycloak
 * Redis
+* Loki
+* Tempo
+* Grafana
 * PostgreSQL
 * Docker & Docker Compose
 * JUnit 5 / Mockito
