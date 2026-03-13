@@ -12,9 +12,10 @@ public class SecutiryConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((requests) -> requests
-                .anyRequest().permitAll()
-            )
+                .authorizeHttpRequests((requests) -> {
+                    requests.requestMatchers("/actuator/**").permitAll();
+                    requests.anyRequest().permitAll();
+                })
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
