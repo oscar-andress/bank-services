@@ -1,7 +1,7 @@
 # 🏦 Bank Services – Microservices
 ![Docker](https://img.shields.io/badge/docker-ready-blue)
 
-Bank system based on **microservices and event-driven architecture**.
+Bank system based on **microservices, event-driven architecture and observability**.
 
 ---
 ## 🧱 Architecture
