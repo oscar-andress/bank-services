@@ -160,6 +160,8 @@ services:
       SPRING_DATASOURCE_URL: ${CLIENT_PERSON_URL}
       SPRING_DATASOURCE_USERNAME: ${CLIENT_PERSON_USER}
       SPRING_DATASOURCE_PASSWORD: ${CLIENT_PERSON_PASS}
+    labels:
+      collect_logs: "true"
     networks:
       - bank-network
 
@@ -178,6 +180,8 @@ services:
       SPRING_DATASOURCE_URL: ${ACCOUNT_MOVEMENT_URL}
       SPRING_DATASOURCE_USERNAME: ${ACCOUNT_MOVEMENT_USER}
       SPRING_DATASOURCE_PASSWORD: ${ACCOUNT_MOVEMENT_PASS}
+    labels:
+      collect_logs: "true"
     networks:
       - bank-network
 
@@ -196,6 +200,8 @@ services:
       SPRING_DATASOURCE_URL: ${REPORT_SERVICE_URL}
       SPRING_DATASOURCE_USERNAME: ${REPORT_SERVICE_USER}
       SPRING_DATASOURCE_PASSWORD: ${REPORT_SERVICE_PASS}
+    labels:
+      collect_logs: "true"
     networks:
       - bank-network
 
